@@ -62,25 +62,58 @@
       callApi('status', { taskId });
     }
 
-    async function vip() {
-  const taskId = document.getElementById('taskId').value.trim();
-  if (!taskId) return alert("Please enter a Task ID.");
-
-  const res = await fetch('/api/vip', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ taskId })
-  });
-
-  const json = await res.json();
-  const output = document.getElementById('output');
-
-  if (json.code === 0) {
-    output.textContent = `✅ Task successfully added to VIP queue!\n\n${JSON.stringify(json, null, 2)}`;
-  } else {
-    output.textContent = `⚠️ Could not add to VIP queue.\n\nMessage: ${json.msg || json.error || 'Unknown error'}\n\n${JSON.stringify(json, null, 2)}`;
+    <script>
+  async function callApi(endpoint, payload) {
+    const res = await fetch(`/api/${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    document.getElementById('output').textContent = JSON.stringify(data, null, 2);
   }
-}
+
+  function submit() {
+    const url = document.getElementById('url').value.trim();
+    if (!url) return alert("Please enter a URL.");
+    callApi('submit', { url });
+  }
+
+  function status() {
+    const taskId = document.getElementById('taskId').value.trim();
+    if (!taskId) return alert("Please enter a Task ID.");
+    callApi('status', { taskId });
+  }
+
+  async function vip() {
+    const taskId = document.getElementById('taskId').value.trim();
+    const output = document.getElementById('output');
+
+    if (!taskId) {
+      output.textContent = "❌ Error: Please enter a Task ID.";
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/vip', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ taskId })
+      });
+
+      const json = await res.json();
+
+      if (json.code === 0) {
+        output.textContent = `✅ VIP Added!\n\n${JSON.stringify(json, null, 2)}`;
+      } else {
+        output.textContent = `⚠️ Could not add to VIP:\n${json.msg || json.error || 'Unknown issue'}\n\n${JSON.stringify(json, null, 2)}`;
+      }
+    } catch (error) {
+      output.textContent = `❌ Fetch failed: ${error.message}`;
+    }
+  }
+</script>
+
   </script>
 </body>
 </html>
