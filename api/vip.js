@@ -15,19 +15,9 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         Authorization: API_KEY,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ task_id: taskId }),
+      body: JSON.stringify({ task_id: taskId })
     });
 
-    const data = await response.json();
-
-    if (data.code !== 0) {
-      return res.status(500).json({ error: data.msg || 'Failed to add to VIP queue' });
-    }
-
-    res.status(200).json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message || 'Something went wrong' });
-  }
-}
+    const result = await response.json(
