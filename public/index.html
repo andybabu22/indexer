@@ -71,33 +71,34 @@
       callApi('status', { taskId });
     }
 
-    async function vip() {
-      const taskId = document.getElementById('taskId').value.trim();
-      const output = document.getElementById('output');
+    <script>
+  async function vip() {
+    const taskId = document.getElementById('taskId').value.trim();
+    const output = document.getElementById('output');
 
-      if (!taskId) {
-        output.textContent = "❌ Error: Please enter a Task ID.";
-        return;
-      }
-
-      try {
-        const res = await fetch('/api/vip', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ taskId })
-        });
-
-        const json = await res.json();
-
-        if (json.code === 0) {
-          output.textContent = `✅ VIP Added!\n\n${JSON.stringify(json, null, 2)}`;
-        } else {
-          output.textContent = `⚠️ Could not add to VIP:\n${json.msg || json.error || 'Unknown issue'}\n\n${JSON.stringify(json, null, 2)}`;
-        }
-      } catch (error) {
-        output.textContent = `❌ Fetch failed: ${error.message}`;
-      }
+    if (!taskId) {
+      output.textContent = "❌ Error: Please enter a Task ID.";
+      return;
     }
-  </script>
+
+    try {
+      const res = await fetch('/api/vip', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task_id: taskId }) // ✅ fixed key name
+      });
+
+      const json = await res.json();
+
+      if (json.code === 0) {
+        output.textContent = `✅ VIP Added!\n\n${JSON.stringify(json, null, 2)}`;
+      } else {
+        output.textContent = `⚠️ Could not add to VIP:\n${json.msg || json.error || 'Unknown issue'}\n\n${JSON.stringify(json, null, 2)}`;
+      }
+    } catch (error) {
+      output.textContent = `❌ Fetch failed: ${error.message}`;
+    }
+  }
+</script>
 </body>
 </html>
