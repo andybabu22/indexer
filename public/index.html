@@ -1,23 +1,71 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"><title>SpeedyIndex Tool</title></head>
-<body>
-  <h1>SpeedyIndex</h1>
-  <input id="url" placeholder="URL" /><button onclick="callApi('submit')">Submit URL</button><br>
-  <input id="taskId" placeholder="Task ID" /><button onclick="callApi('status')">Check Status</button>
-  <button onclick="callApi('vip')">Add to VIP</button>
-  <pre id="output"></pre>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Indexer Tool</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="max-w-2xl mx-auto p-8 mt-10 bg-white shadow-md rounded-xl">
+    <h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">🔎 URL Indexing</h1>
+
+    <div class="mb-6">
+      <label class="block text-gray-700 font-medium mb-2">URL to Submit</label>
+      <input id="url" type="text" placeholder="https://example.com/page"
+        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400" />
+      <button onclick="submit()" class="mt-3 bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
+        ➕ Submit URL
+      </button>
+    </div>
+
+    <div class="mb-6">
+      <label class="block text-gray-700 font-medium mb-2">Task ID</label>
+      <input id="taskId" type="text" placeholder="Task ID returned after submission"
+        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400" />
+      <div class="mt-3 flex gap-3">
+        <button onclick="status()"
+          class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">✅ Check Status</button>
+        <button onclick="vip()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+          🚀 Add to VIP
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-gray-700 font-medium mb-2">Response</label>
+      <pre id="output"
+        class="bg-gray-100 border border-gray-300 rounded-lg p-4 text-sm overflow-auto h-64"></pre>
+    </div>
+  </div>
+
   <script>
-    async function callApi(endpoint) {
-      const payload = endpoint === 'submit'
-        ? { url: document.getElementById('url').value }
-        : { taskId: document.getElementById('taskId').value };
+    async function callApi(endpoint, payload) {
       const res = await fetch(`/api/${endpoint}`, {
         method: 'POST',
-        headers: {'Content-Type':'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      document.getElementById('output').textContent = JSON.stringify(await res.json(), null, 2);
+      const data = await res.json();
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+    }
+
+    function submit() {
+      const url = document.getElementById('url').value.trim();
+      if (!url) return alert("Please enter a URL.");
+      callApi('submit', { url });
+    }
+
+    function status() {
+      const taskId = document.getElementById('taskId').value.trim();
+      if (!taskId) return alert("Please enter a Task ID.");
+      callApi('status', { taskId });
+    }
+
+    function vip() {
+      const taskId = document.getElementById('taskId').value.trim();
+      if (!taskId) return alert("Please enter a Task ID.");
+      callApi('vip', { taskId });
     }
   </script>
 </body>
