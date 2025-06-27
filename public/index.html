@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>SpeedyIndex Tool</title></head>
+<body>
+  <h1>SpeedyIndex</h1>
+  <input id="url" placeholder="URL" /><button onclick="callApi('submit')">Submit URL</button><br>
+  <input id="taskId" placeholder="Task ID" /><button onclick="callApi('status')">Check Status</button>
+  <button onclick="callApi('vip')">Add to VIP</button>
+  <pre id="output"></pre>
+  <script>
+    async function callApi(endpoint) {
+      const payload = endpoint === 'submit'
+        ? { url: document.getElementById('url').value }
+        : { taskId: document.getElementById('taskId').value };
+      const res = await fetch(`/api/${endpoint}`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      document.getElementById('output').textContent = JSON.stringify(await res.json(), null, 2);
+    }
+  </script>
+</body>
+</html>
