@@ -4,7 +4,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { apiKey, urls, title, useVip } = req.body;
+  const { apiKey: userKey, urls, title, useVip } = req.body;
+const apiKey = userKey || process.env.DEFAULT_API_KEY;
 
   try {
     const createTask = await fetch('https://api.speedyindex.com/v2/task/google/indexer/create', {
